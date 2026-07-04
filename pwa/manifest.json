@@ -1,0 +1,66 @@
+{
+  "name": "AltiLearn",
+  "short_name": "AltiLearn",
+  "description": "Learn anything, anytime — even offline.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1E3A5F",
+  "theme_color": "#1A56DB",
+  "lang": "en",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "/pwa/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/pwa/screenshots/home-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "AltiLearn home page"
+    },
+    {
+      "src": "/pwa/screenshots/home-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "AltiLearn on mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Courses",
+      "short_name": "Courses",
+      "description": "Jump straight to the course catalogue",
+      "url": "/sub-homepages/courses.html",
+      "icons": [{ "src": "/pwa/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Learning Paths",
+      "short_name": "Paths",
+      "description": "Continue your learning path",
+      "url": "/sub-homepages/paths.html",
+      "icons": [{ "src": "/pwa/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

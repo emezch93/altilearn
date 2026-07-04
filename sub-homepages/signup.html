@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Create your account — AltiLearn</title>
+  <meta name="description" content="Join AltiLearn free and start learning skills in minutes."/>
+  <meta name="theme-color" content="#0B0C10"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    /* BUG 3 FIX: hide until auth resolves */
+    body{visibility:hidden}
+    :root{
+      --ink:#0B0C10;--surface:#13141A;--surface-2:#1A1B24;
+      --mint:#00E5B0;--mint-dim:rgba(0,229,176,0.12);--mint-glow:rgba(0,229,176,0.28);
+      --violet:#7B5EFF;--chalk:#F2F0EB;--mist:#9B99A8;
+      --red:#FF5C5C;--red-dim:rgba(255,92,92,0.1);
+      --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.15);
+      --r-md:12px;--r-xl:28px;
+      --fd:'Plus Jakarta Sans',sans-serif;--fb:'Inter',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--ink);color:var(--chalk);font-family:var(--fb);
+         -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+    .page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:68px}
+    .left{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+          padding:60px;position:relative;overflow:hidden}
+    .left::before{content:'';position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse at 80% 20%,rgba(0,229,176,.07) 0%,transparent 55%),
+                radial-gradient(ellipse at 20% 80%,rgba(123,94,255,.09) 0%,transparent 55%)}
+    .brand{max-width:380px;width:100%;position:relative}
+    .pill{display:inline-flex;align-items:center;gap:7px;background:var(--mint-dim);border:1px solid rgba(0,229,176,.2);border-radius:100px;padding:5px 14px;font-size:12px;color:var(--mint);font-weight:500;margin-bottom:24px}
+    .pdot{width:6px;height:6px;border-radius:50%;background:var(--mint);animation:blink 2s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+    .brand h2{font-family:var(--fd);font-weight:800;font-size:clamp(26px,3vw,38px);line-height:1.15;letter-spacing:-.025em;margin-bottom:12px}
+    .brand h2 em{font-style:normal;background:linear-gradient(90deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .brand p{font-size:15px;color:var(--mist);line-height:1.7;margin-bottom:32px}
+    .perks{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+    .perk{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--chalk)}
+    .pchk{width:20px;height:20px;border-radius:50%;background:var(--mint-dim);border:1px solid rgba(0,229,176,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .bdiv{height:1px;background:var(--border);margin-bottom:24px}
+    .sproof{display:flex;align-items:center;gap:12px}
+    .avs{display:flex}
+    .av{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--fd);margin-right:-8px}
+    .av:last-child{margin-right:0}
+    .sproof p{font-size:13px;color:var(--mist)}.sproof p strong{color:var(--chalk)}
+    .right{display:flex;align-items:center;justify-content:center;padding:60px;border-left:1px solid var(--border)}
+    .card{background:var(--surface);border:1px solid var(--border-hi);border-radius:var(--r-xl);padding:40px;width:100%;max-width:420px;box-shadow:inset 0 1px 0 rgba(0,229,176,.15)}
+    /* Steps */
+    .steps{display:flex;align-items:center;margin-bottom:32px}
+    .si{display:flex;align-items:center;gap:8px}
+    .sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--fd);flex-shrink:0;border:1.5px solid var(--border-hi);color:var(--mist);background:var(--surface-2);transition:background .25s,border-color .25s}
+    .sdot.active{background:var(--mint);color:#07140F;border-color:var(--mint)}
+    .sdot.done{background:var(--mint-dim);border-color:var(--mint);color:var(--mint)}
+    .slbl{font-size:11px;color:var(--mist);font-weight:500;white-space:nowrap}
+    .slbl.active{color:var(--chalk)}
+    .sline{flex:1;height:1px;background:var(--border);margin:0 8px;min-width:12px;transition:background .25s}
+    .sline.done{background:var(--mint)}
+    .step{display:none}.step.active{display:block}
+    .stitle{font-family:var(--fd);font-weight:800;font-size:22px;margin-bottom:6px}
+    .ssub{font-size:14px;color:var(--mist);margin-bottom:24px}
+    /* Banner */
+    .banner{display:none;align-items:flex-start;gap:10px;border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:16px;line-height:1.5}
+    .banner.show{display:flex}
+    .banner.err{background:var(--red-dim);border:1px solid rgba(255,92,92,.25);color:var(--red)}
+    .banner svg{flex-shrink:0;margin-top:1px}
+    /* Fields */
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:13px;font-weight:500;color:var(--mist);margin-bottom:6px}
+    .wrap{position:relative}
+    .wrap input{width:100%;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-md);padding:12px 42px 12px 16px;font-size:14px;color:var(--chalk);font-family:var(--fb);outline:none;transition:border-color .15s}
+    .wrap input:focus{border-color:var(--mint)}
+    .wrap input.err{border-color:var(--red)}
+    .fi{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;padding:4px;cursor:pointer;color:var(--mist);display:flex;border-radius:4px}
+    .fi:hover{color:var(--chalk)}
+    .fe{font-size:12px;color:var(--red);display:none;align-items:center;gap:4px;margin-top:5px}
+    .fe.show{display:flex}
+    /* PW strength */
+    .pw-str{margin-top:8px;display:none}.pw-str.show{display:block}
+    .bars{display:flex;gap:4px;margin-bottom:4px}
+    .bar{flex:1;height:3px;border-radius:100px;background:var(--border-hi);transition:background .2s}
+    .bar.weak{background:var(--red)}.bar.fair{background:#F2A623}.bar.strong{background:var(--mint)}
+    .bar-lbl{font-size:11px;color:var(--mist)}
+    /* Role cards */
+    .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+    .rc{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-md);padding:14px 12px;cursor:pointer;text-align:center;transition:border-color .15s,transform .15s,background .15s;will-change:transform}
+    .rc:hover{border-color:var(--border-hi);transform:translateY(-1px)}
+    .rc:active{transform:translateY(0)}
+    .rc.sel{border-color:var(--mint);background:var(--mint-dim)}
+    .rc .ri{font-size:24px;margin-bottom:8px}.rc .rn{font-size:13px;font-weight:600;color:var(--chalk)}.rc .rd{font-size:11px;color:var(--mist);margin-top:3px}
+    /* Buttons */
+    .sub-btn{width:100%;padding:14px;border-radius:100px;background:var(--mint);color:#07140F;font-weight:700;font-size:15px;border:none;cursor:pointer;font-family:var(--fb);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px;transition:box-shadow .2s,transform .2s;will-change:transform}
+    .sub-btn:hover:not(:disabled){box-shadow:0 0 28px var(--mint-glow);transform:translateY(-1px)}
+    .sub-btn:active:not(:disabled){transform:translateY(0)}
+    .sub-btn:disabled{opacity:.6;cursor:not-allowed}
+    .sub-btn .sp{display:none;width:18px;height:18px;border:2.5px solid rgba(7,20,15,.25);border-top-color:#07140F;border-radius:50%;animation:spin .7s linear infinite}
+    .sub-btn.loading .sp{display:block}.sub-btn.loading .bl{opacity:.7}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .back-btn{background:none;border:none;color:var(--mist);font-size:13px;cursor:pointer;font-family:var(--fb);display:inline-flex;align-items:center;gap:5px;padding:0;margin-bottom:20px;transition:color .15s}
+    .back-btn:hover{color:var(--chalk)}
+    .social-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;background:var(--surface-2);border:1.5px solid var(--border-hi);border-radius:var(--r-md);font-size:14px;font-weight:500;color:var(--chalk);cursor:pointer;font-family:var(--fb);margin-bottom:16px;transition:border-color .15s,transform .18s,background .15s;position:relative;will-change:transform}
+    .social-btn:hover:not(:disabled){border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);transform:translateY(-1px)}
+    .social-btn:active:not(:disabled){transform:translateY(0)}
+    .social-btn:disabled{opacity:.55;cursor:not-allowed}
+    .social-btn .sp{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--chalk);border-radius:50%;animation:spin .7s linear infinite;position:absolute;right:16px}
+    .social-btn.loading .sp{display:block}.social-btn.loading .sl{opacity:.6}
+    .or{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .or::before,.or::after{content:'';flex:1;height:1px;background:var(--border)}
+    .or span{font-size:12px;color:var(--mist)}
+    .foot{text-align:center;font-size:14px;color:var(--mist);margin-top:20px}
+    .foot a{color:var(--mint);font-weight:600;text-decoration:none}
+    .foot a:hover{text-decoration:underline}
+    .tnote{font-size:12px;color:var(--mist);text-align:center;margin-top:12px}
+    .tnote a{color:var(--mint);text-decoration:none}
+    /* Success */
+    .success{display:none;text-align:center;padding:20px 0}
+    .success.show{display:block}
+    .sicon{width:64px;height:64px;border-radius:50%;background:var(--mint-dim);border:1px solid rgba(0,229,176,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+    /* Footer */
+    footer{border-top:1px solid var(--border);padding:48px 0 32px}
+    .fw{max-width:1100px;margin:0 auto;padding:0 24px}
+    .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:36px}
+    .fc h5{font-size:12px;font-weight:600;color:var(--chalk);margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase}
+    .fc ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .fc ul a{font-size:14px;color:var(--mist);text-decoration:none;transition:color .15s}
+    .fc ul a:hover{color:var(--chalk)}
+    .fb-brand p{font-size:14px;color:var(--mist);margin-top:10px;max-width:240px;line-height:1.65}
+    .fbot{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .fbot p,.fbot a{font-size:13px;color:var(--mist);text-decoration:none}
+    .fbot a:hover{color:var(--chalk)}
+    .flinks{display:flex;gap:20px}
+    @media(max-width:860px){.page{grid-template-columns:1fr}.left{display:none}.right{padding:40px 24px;border-left:none}.card{max-width:100%}.fg{grid-template-columns:1fr 1fr;gap:32px}}
+    @media(max-width:540px){.fg{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+
+<div id="al-nav-root"></div>
+
+<main class="page">
+  <!-- LEFT -->
+  <div class="left" aria-hidden="true">
+    <div class="brand">
+      <div class="pill"><span class="pdot"></span>Free forever plan available</div>
+      <h2>Your skills journey<br>starts <em>right here.</em></h2>
+      <p>Join 10,000+ learners building real skills in minutes a day — no overwhelm, no fluff.</p>
+      <div class="perks">
+        <div class="perk"><div class="pchk"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>5 free lessons every single day</div>
+        <div class="perk"><div class="pchk"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>500+ courses across 12 categories</div>
+        <div class="perk"><div class="pchk"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Progress tracking, streaks & certificates</div>
+        <div class="perk"><div class="pchk"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>No credit card required</div>
+      </div>
+      <div class="bdiv"></div>
+      <div class="sproof">
+        <div class="avs">
+          <div class="av" style="background:#7B5EFF">JK</div>
+          <div class="av" style="background:#00E5B0;color:#07140F">OM</div>
+          <div class="av" style="background:#FF7055">SA</div>
+          <div class="av" style="background:#F2A623;color:#07140F">TC</div>
+        </div>
+        <p><strong>10,000+</strong> learners active this week</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="card" role="main">
+      <div class="steps" id="step-ind" aria-label="Sign up progress">
+        <div class="si"><div class="sdot active" id="d1">1</div><span class="slbl active" id="l1">You</span></div>
+        <div class="sline" id="ln1"></div>
+        <div class="si"><div class="sdot" id="d2">2</div><span class="slbl" id="l2">Account</span></div>
+        <div class="sline" id="ln2"></div>
+        <div class="si"><div class="sdot" id="d3">3</div><span class="slbl" id="l3">Goal</span></div>
+      </div>
+
+      <div class="banner err" id="banner" role="alert" aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="banner-msg"></span>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step active" id="step-1">
+        <h1 class="stitle">What's your name?</h1>
+        <p class="ssub">We'll personalise your experience.</p>
+        <button class="social-btn" id="btn-google" type="button" aria-label="Sign up with Google">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M17.64 9.2c0-.638-.057-1.252-.164-1.84H9v3.48h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908C16.658 14.313 17.64 11.945 17.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.859-3.048.859-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          <span class="sl">Sign up with Google</span><span class="sp" aria-hidden="true"></span>
+        </button>
+        <div class="or"><span>or fill in your details</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label for="first-name">First name</label>
+            <div class="wrap"><input type="text" id="first-name" placeholder="Ada" autocomplete="given-name"/></div>
+            <div class="fe" id="fn-err"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Required</div>
+          </div>
+          <div class="field">
+            <label for="last-name">Last name</label>
+            <div class="wrap"><input type="text" id="last-name" placeholder="Okonkwo" autocomplete="family-name"/></div>
+            <div class="fe" id="ln-err"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Required</div>
+          </div>
+        </div>
+        <button class="sub-btn" id="btn-s1" type="button">
+          <span class="bl">Continue</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="foot">Already have an account? <a href="login.html">Log in</a></p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" id="step-2">
+        <button class="back-btn" id="back-1" type="button">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back
+        </button>
+        <h2 class="stitle">Set up your account</h2>
+        <p class="ssub" id="greeting">Almost there — just your email and a password.</p>
+        <div class="field">
+          <label for="email">Email address</label>
+          <div class="wrap">
+            <input type="email" id="email" placeholder="ada@example.com" autocomplete="email"/>
+            <span class="fi" style="cursor:default" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 5.5l7 4 7-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+          </div>
+          <div class="fe" id="em-err"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Enter a valid email address</div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="wrap">
+            <input type="password" id="password" placeholder="Create a strong password" autocomplete="new-password"/>
+            <button type="button" class="fi" id="eye-btn" aria-label="Show or hide password">
+              <svg id="eye-svg" width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg>
+            </button>
+          </div>
+          <div class="pw-str" id="pw-str">
+            <div class="bars"><div class="bar" id="b1"></div><div class="bar" id="b2"></div><div class="bar" id="b3"></div><div class="bar" id="b4"></div></div>
+            <span class="bar-lbl" id="bar-lbl">Too short</span>
+          </div>
+          <div class="fe" id="pw-err"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Password must be at least 8 characters</div>
+        </div>
+        <button class="sub-btn" id="btn-s2" type="button">
+          <span class="bl">Continue</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="tnote">By continuing you agree to our <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" id="step-3">
+        <button class="back-btn" id="back-2" type="button">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back
+        </button>
+        <h2 class="stitle">What brings you here?</h2>
+        <p class="ssub">We'll tailor your experience from day one.</p>
+        <div class="role-grid" role="group" aria-label="Select your role">
+          <div class="rc sel" data-role="learner" role="radio" aria-checked="true" tabindex="0"><div class="ri">🎓</div><div class="rn">Learner</div><div class="rd">I want to build skills</div></div>
+          <div class="rc" data-role="instructor" role="radio" aria-checked="false" tabindex="0"><div class="ri">🎤</div><div class="rn">Instructor</div><div class="rd">I want to teach & earn</div></div>
+          <div class="rc" data-role="curator" role="radio" aria-checked="false" tabindex="0"><div class="ri">🗂️</div><div class="rn">Curator</div><div class="rd">I want to organise content</div></div>
+          <div class="rc" data-role="both" role="radio" aria-checked="false" tabindex="0"><div class="ri">⚡</div><div class="rn">Both</div><div class="rd">Learn & teach</div></div>
+        </div>
+        <button class="sub-btn" id="final-btn" type="button">
+          <span class="bl">Create my account</span><span class="sp" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success" id="success" role="status" aria-live="polite">
+        <div class="sicon">🎉</div>
+        <h2 style="font-family:var(--fd);font-weight:800;font-size:22px;margin-bottom:8px">You're in!</h2>
+        <p style="font-size:14px;color:var(--mist);margin-bottom:24px">Welcome to AltiLearn, <span id="wname" style="color:var(--chalk);font-weight:600"></span>. Your first lesson awaits.</p>
+        <a href="../index.html" class="sub-btn" style="text-decoration:none;width:auto;padding:13px 28px">Go to dashboard →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="fw">
+    <div class="fg">
+      <div class="fb-brand">
+        <a href="../index.html" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;color:#F2F0EB;text-decoration:none;display:flex;align-items:center;gap:10px">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#13141A"/><rect width="36" height="36" rx="10" fill="url(#sgf)" opacity=".18"/><path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/><path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="28" cy="27" r="1.6" fill="#00E5B0"/><defs><linearGradient id="sgf" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B5EFF"/><stop offset="100%" stop-color="#00E5B0"/></linearGradient></defs></svg>AltiLearn
+        </a>
+        <p>Microlearning that actually sticks. Build skills in minutes a day.</p>
+      </div>
+      <div class="fc"><h5>Learn</h5><ul><li><a href="courses.html">Browse courses</a></li><li><a href="paths.html">Learning paths</a></li><li><a href="certificates.html">Certificates</a></li><li><a href="pricing.html">Pricing</a></li></ul></div>
+      <div class="fc"><h5>Teach</h5><ul><li><a href="teach.html">Start teaching</a></li><li><a href="instructor-guide.html">Instructor guide</a></li><li><a href="community.html">Community</a></li><li><a href="affiliate.html">Affiliate</a></li></ul></div>
+      <div class="fc"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="careers.html">Careers</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    </div>
+    <div class="fbot"><p>© 2026 AltiLearn. All rights reserved.</p><div class="flinks"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a></div></div>
+  </div>
+</footer>
+
+<script type="module">
+  import { auth, db, googleProvider, onAuthChange, updateNavForAuth } from "./auth.js";
+  import { createUserWithEmailAndPassword, updateProfile, signInWithPopup }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, setDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  /* BUG 3 FIX */
+  let creating = false;
+  onAuthChange(async user => {
+    if (user && !creating) { window.location.href = "../index.html"; return; }
+    document.body.style.visibility = "visible";
+    await updateNavForAuth(null);
+  });
+
+  const ERR = {
+    "auth/email-already-in-use":"An account with this email exists. <a href='login.html' style='color:var(--mint)'>Log in instead?</a>",
+    "auth/invalid-email":       "That email doesn't look right.",
+    "auth/weak-password":       "Choose a stronger password (min 8 chars).",
+    "auth/network-request-failed":"Network error — check your connection.",
+    "auth/popup-closed-by-user":"Google sign-in was cancelled.",
+    "auth/cancelled-popup-request": null,
+    "auth/unauthorized-domain": "Add this domain in Firebase → Authentication → Authorized Domains.",
+  };
+
+  let role = "learner";
+
+  function showBanner(msg) { if(!msg)return; document.getElementById("banner-msg").innerHTML=msg; document.getElementById("banner").classList.add("show"); }
+  function clearBanner() { document.getElementById("banner").classList.remove("show"); }
+  function setLoad(id, on, text) {
+    const el = document.getElementById(id);
+    el.disabled = on; el.classList.toggle("loading", on);
+    if (text) { const bl = el.querySelector(".bl"); if(bl) bl.textContent = text; }
+  }
+
+  function goToStep(n) {
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    document.getElementById("step-"+n).classList.add("active");
+    clearBanner();
+    [1,2,3].forEach(i => {
+      const d=document.getElementById("d"+i), l=document.getElementById("l"+i);
+      d.classList.remove("active","done"); l.classList.remove("active");
+      if(i<n){d.classList.add("done");d.innerHTML=`<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round"/></svg>`;}
+      if(i===n){d.classList.add("active");d.textContent=i;l.classList.add("active");}
+      if(i>n){d.textContent=i;}
+    });
+    [1,2].forEach(i=>document.getElementById("ln"+i).classList.toggle("done",i<n));
+  }
+
+  async function saveProfile(user, extra={}) {
+    try {
+      await Promise.race([
+        setDoc(doc(db,"users",user.uid),{
+          uid:user.uid, email:user.email,
+          firstName:extra.firstName||user.displayName?.split(" ")[0]||"",
+          lastName:extra.lastName||user.displayName?.split(" ").slice(1).join(" ")||"",
+          role:extra.role||"learner", plan:"free",
+          streak:0, lessonsCompleted:0, createdAt:serverTimestamp()
+        },{merge:true}),
+        new Promise((_,r)=>setTimeout(()=>r(new Error("timeout")),4000))
+      ]);
+      /* Cache to sessionStorage */
+      sessionStorage.setItem("al_user", JSON.stringify({
+        firstName:extra.firstName||"",lastName:extra.lastName||"",
+        role:extra.role||"learner", email:user.email
+      }));
+    } catch(e){console.warn("Profile:",e);}
+  }
+
+  /* Step 1 → 2 */
+  document.getElementById("btn-s1").addEventListener("click", () => {
+    const fn=document.getElementById("first-name"),ln=document.getElementById("last-name");
+    const fne=document.getElementById("fn-err"),lne=document.getElementById("ln-err");
+    let ok=true;
+    fne.classList.remove("show");fn.classList.remove("err");
+    lne.classList.remove("show");ln.classList.remove("err");
+    if(!fn.value.trim()){fne.classList.add("show");fn.classList.add("err");ok=false;}
+    if(!ln.value.trim()){lne.classList.add("show");ln.classList.add("err");ok=false;}
+    if(!ok)return;
+    document.getElementById("greeting").textContent=`Nice to meet you, ${fn.value.trim()}! Set up your login details.`;
+    goToStep(2);
+  });
+
+  /* Step 2 → 3 */
+  document.getElementById("btn-s2").addEventListener("click", () => {
+    const em=document.getElementById("email"),pw=document.getElementById("password");
+    const eme=document.getElementById("em-err"),pwe=document.getElementById("pw-err");
+    let ok=true;
+    eme.classList.remove("show");em.classList.remove("err");
+    pwe.classList.remove("show");pw.classList.remove("err");
+    if(!em.value||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)){eme.classList.add("show");em.classList.add("err");ok=false;}
+    if(!pw.value||pw.value.length<8){pwe.classList.add("show");pw.classList.add("err");ok=false;}
+    if(!ok)return;
+    goToStep(3);
+  });
+
+  document.getElementById("back-1").addEventListener("click",()=>goToStep(1));
+  document.getElementById("back-2").addEventListener("click",()=>goToStep(2));
+
+  /* Role selection */
+  document.querySelector(".role-grid").addEventListener("click",e=>{
+    const c=e.target.closest(".rc"); if(!c)return;
+    document.querySelectorAll(".rc").forEach(x=>{x.classList.remove("sel");x.setAttribute("aria-checked","false");});
+    c.classList.add("sel");c.setAttribute("aria-checked","true");role=c.dataset.role;
+  });
+  document.querySelector(".role-grid").addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" ")e.target.closest(".rc")?.click();
+  });
+
+  /* Final create */
+  document.getElementById("final-btn").addEventListener("click", async () => {
+    clearBanner();
+    const fn=document.getElementById("first-name").value.trim();
+    const ln=document.getElementById("last-name").value.trim();
+    const email=document.getElementById("email").value.trim();
+    const pw=document.getElementById("password").value;
+    /* BUG 4 FIX: immediate loading */
+    setLoad("final-btn",true,"Creating account...");
+    creating=true;
+    try {
+      const cred=await createUserWithEmailAndPassword(auth,email,pw);
+      await updateProfile(cred.user,{displayName:`${fn} ${ln}`});
+      await saveProfile(cred.user,{firstName:fn,lastName:ln,role});
+      document.getElementById("step-3").classList.remove("active");
+      document.getElementById("step-ind").style.display="none";
+      document.getElementById("wname").textContent=fn;
+      document.getElementById("success").classList.add("show");
+    } catch(err) {
+      creating=false;
+      setLoad("final-btn",false,"Create my account");
+      if(err.code==="auth/email-already-in-use"||err.code==="auth/invalid-email")goToStep(2);
+      showBanner(ERR[err.code]||"Account creation failed. Please try again.");
+    }
+  });
+
+  /* Google */
+  document.getElementById("btn-google").addEventListener("click", async () => {
+    clearBanner(); setLoad("btn-google",true); creating=true;
+    try {
+      const r=await signInWithPopup(auth, googleProvider);
+      await saveProfile(r.user,{role});
+      window.location.href="../index.html";
+    } catch(err) {
+      creating=false; setLoad("btn-google",false);
+      showBanner(ERR[err.code]||"Google sign-up failed.");
+    }
+  });
+
+  /* Password strength */
+  document.getElementById("password").addEventListener("input",e=>{
+    const val=e.target.value,wrap=document.getElementById("pw-str");
+    const bars=[1,2,3,4].map(i=>document.getElementById("b"+i)),lbl=document.getElementById("bar-lbl");
+    if(!val){wrap.classList.remove("show");return;}
+    wrap.classList.add("show");
+    let s=0;
+    if(val.length>=8)s++;if(val.length>=12)s++;
+    if(/[A-Z]/.test(val)&&/[a-z]/.test(val))s++;if(/[\d\W]/.test(val))s++;
+    const lvls=[{c:"weak",t:"Too weak",n:1},{c:"weak",t:"Weak",n:1},{c:"fair",t:"Fair",n:2},{c:"strong",t:"Good",n:3},{c:"strong",t:"Strong 🔒",n:4}];
+    const lv=lvls[s]||lvls[0];
+    bars.forEach((b,i)=>{b.className="bar";if(i<lv.n)b.classList.add(lv.c);});
+    lbl.textContent=lv.t;lbl.style.color=lv.c==="strong"?"var(--mint)":lv.c==="fair"?"#F2A623":"var(--red)";
+  });
+
+  /* Eye toggle */
+  let pwv=false;
+  document.getElementById("eye-btn").addEventListener("click",()=>{
+    pwv=!pwv;document.getElementById("password").type=pwv?"text":"password";
+    document.getElementById("eye-svg").innerHTML=pwv
+      ?`<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>`
+      :`<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>`;
+  });
+
+  /* Clear on input */
+  ["first-name","last-name","email","password"].forEach(id=>{
+    document.getElementById(id)?.addEventListener("input",()=>{document.getElementById(id).classList.remove("err");clearBanner();});
+  });
+</script>
+</body>
+</html>

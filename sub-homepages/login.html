@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Log in — AltiLearn</title>
+  <meta name="description" content="Log in to your AltiLearn account."/>
+  <meta name="theme-color" content="#0B0C10"/>
+  <link rel="manifest" href="/pwa/manifest.json"/>
+  <link rel="apple-touch-icon" href="/pwa/icons/icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    /* BUG 3 FIX: hide body until auth check completes — zero flash */
+    body{visibility:hidden}
+    :root{
+      --ink:#0B0C10;--surface:#13141A;--surface-2:#1A1B24;
+      --mint:#00E5B0;--mint-dim:rgba(0,229,176,0.12);--mint-glow:rgba(0,229,176,0.28);
+      --violet:#7B5EFF;--chalk:#F2F0EB;--mist:#9B99A8;
+      --red:#FF5C5C;--red-dim:rgba(255,92,92,0.1);
+      --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.15);
+      --r-md:12px;--r-xl:28px;
+      --fd:'Plus Jakarta Sans',sans-serif;--fb:'Inter',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--ink);color:var(--chalk);font-family:var(--fb);
+         -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+    .page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:68px}
+    .left{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+          padding:60px;position:relative;overflow:hidden}
+    .left::before{content:'';position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse at 25% 55%,rgba(123,94,255,.1) 0%,transparent 58%),
+                radial-gradient(ellipse at 75% 25%,rgba(0,229,176,.07) 0%,transparent 50%)}
+    .brand{max-width:380px;width:100%;position:relative}
+    .brand h2{font-family:var(--fd);font-weight:800;font-size:clamp(26px,3vw,40px);
+              line-height:1.15;letter-spacing:-.025em;margin-bottom:12px}
+    .brand h2 em{font-style:normal;background:linear-gradient(90deg,var(--mint),var(--violet));
+                 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .brand p{font-size:15px;color:var(--mist);line-height:1.7;margin-bottom:32px}
+    .stats{display:flex;flex-direction:column;gap:10px}
+    .stat{display:flex;align-items:center;gap:12px;background:var(--surface);
+          border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px}
+    .sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .stat span{font-size:13px;color:var(--mist)}
+    .stat span strong{color:var(--chalk);font-weight:600}
+    .right{display:flex;align-items:center;justify-content:center;
+           padding:60px;border-left:1px solid var(--border)}
+    .card{background:var(--surface);border:1px solid var(--border-hi);border-radius:var(--r-xl);
+          padding:40px;width:100%;max-width:400px;box-shadow:inset 0 1px 0 rgba(0,229,176,.18)}
+    .card-head{margin-bottom:28px}
+    .card-head h1{font-family:var(--fd);font-weight:800;font-size:24px;margin-bottom:5px}
+    .card-head p{font-size:14px;color:var(--mist)}
+    /* Banners */
+    .banner{display:none;align-items:flex-start;gap:10px;border-radius:var(--r-md);
+            padding:12px 14px;font-size:13px;margin-bottom:18px;line-height:1.5}
+    .banner.show{display:flex}
+    .banner.err{background:var(--red-dim);border:1px solid rgba(255,92,92,.25);color:var(--red)}
+    .banner.ok{background:var(--mint-dim);border:1px solid rgba(0,229,176,.25);color:var(--mint)}
+    .banner svg{flex-shrink:0;margin-top:1px}
+    /* Social btn */
+    .social-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+                padding:12px 16px;background:var(--surface-2);border:1.5px solid var(--border-hi);
+                border-radius:var(--r-md);font-size:14px;font-weight:500;color:var(--chalk);
+                cursor:pointer;font-family:var(--fb);margin-bottom:16px;position:relative;
+                transition:border-color .15s,transform .18s,background .15s;will-change:transform}
+    .social-btn:hover:not(:disabled){border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05);transform:translateY(-1px)}
+    .social-btn:active:not(:disabled){transform:translateY(0)}
+    .social-btn:disabled{opacity:.55;cursor:not-allowed}
+    .social-btn .sp{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.2);
+                    border-top-color:var(--chalk);border-radius:50%;
+                    animation:spin .7s linear infinite;position:absolute;right:16px}
+    .social-btn.loading .sp{display:block}
+    .social-btn.loading .sl{opacity:.6}
+    .or{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .or::before,.or::after{content:'';flex:1;height:1px;background:var(--border)}
+    .or span{font-size:12px;color:var(--mist)}
+    /* Fields */
+    .field{margin-bottom:14px}
+    .field-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .field-top label{font-size:13px;font-weight:500;color:var(--mist)}
+    .field-top a{font-size:13px;color:var(--mint);text-decoration:none}
+    .field-top a:hover{text-decoration:underline}
+    .wrap{position:relative}
+    .wrap input{width:100%;background:var(--surface-2);border:1.5px solid var(--border);
+                border-radius:var(--r-md);padding:12px 44px 12px 16px;font-size:14px;
+                color:var(--chalk);font-family:var(--fb);outline:none;transition:border-color .15s}
+    .wrap input:focus{border-color:var(--mint)}
+    .wrap input.err{border-color:var(--red)}
+    .fi{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+        background:none;border:none;padding:4px;cursor:pointer;color:var(--mist);
+        display:flex;border-radius:4px}
+    .fi:hover{color:var(--chalk)}
+    .fe{font-size:12px;color:var(--red);display:none;align-items:center;gap:4px;margin-top:5px}
+    .fe.show{display:flex}
+    /* Submit btn */
+    .sub-btn{width:100%;padding:14px;border-radius:100px;background:var(--mint);
+             color:#07140F;font-weight:700;font-size:15px;border:none;cursor:pointer;
+             font-family:var(--fb);margin-top:6px;display:flex;align-items:center;
+             justify-content:center;gap:10px;transition:box-shadow .2s,transform .2s;will-change:transform}
+    .sub-btn:hover:not(:disabled){box-shadow:0 0 28px var(--mint-glow);transform:translateY(-1px)}
+    .sub-btn:active:not(:disabled){transform:translateY(0)}
+    .sub-btn:disabled{opacity:.6;cursor:not-allowed}
+    .sub-btn .sp{display:none;width:18px;height:18px;border:2.5px solid rgba(7,20,15,.25);
+                 border-top-color:#07140F;border-radius:50%;animation:spin .7s linear infinite}
+    .sub-btn.loading .sp{display:block}
+    .sub-btn.loading .sl{opacity:.7}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .foot{text-align:center;font-size:14px;color:var(--mist);margin-top:20px}
+    .foot a{color:var(--mint);font-weight:600;text-decoration:none}
+    .foot a:hover{text-decoration:underline}
+    /* Footer */
+    footer{border-top:1px solid var(--border);padding:48px 0 32px}
+    .fw{max-width:1100px;margin:0 auto;padding:0 24px}
+    .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:36px}
+    .fc h5{font-size:12px;font-weight:600;color:var(--chalk);margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase}
+    .fc ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .fc ul a{font-size:14px;color:var(--mist);text-decoration:none;transition:color .15s}
+    .fc ul a:hover{color:var(--chalk)}
+    .fb-brand p{font-size:14px;color:var(--mist);margin-top:10px;max-width:240px;line-height:1.65}
+    .fbot{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .fbot p,.fbot a{font-size:13px;color:var(--mist);text-decoration:none}
+    .fbot a:hover{color:var(--chalk)}
+    .flinks{display:flex;gap:20px}
+    @media(max-width:860px){
+      .page{grid-template-columns:1fr}.left{display:none}
+      .right{padding:40px 24px;border-left:none}.card{max-width:100%}
+      .fg{grid-template-columns:1fr 1fr;gap:32px}
+    }
+    @media(max-width:540px){.fg{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+
+<div id="al-nav-root"></div>
+
+<main class="page">
+  <!-- LEFT -->
+  <div class="left" aria-hidden="true">
+    <div class="brand">
+      <h2>Pick up right<br>where you <em>left off.</em></h2>
+      <p>Your courses, progress, streaks, and certificates are all waiting for you.</p>
+      <div class="stats">
+        <div class="stat"><span class="sdot" style="background:var(--mint)"></span><span><strong>10,000+</strong> learners active today</span></div>
+        <div class="stat"><span class="sdot" style="background:var(--violet)"></span><span><strong>500+</strong> courses across 12 categories</span></div>
+        <div class="stat"><span class="sdot" style="background:#F2A623"></span><span><strong>87%</strong> average course completion rate</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Form -->
+  <div class="right">
+    <div class="card">
+      <div class="card-head">
+        <h1>Welcome back</h1>
+        <p>Continue your learning journey</p>
+      </div>
+
+      <!-- Banner (error + success) -->
+      <div class="banner err" id="banner" role="alert" aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="banner-icon" aria-hidden="true">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 5v3.5M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span id="banner-msg"></span>
+      </div>
+
+      <!-- Google -->
+      <button class="social-btn" id="google-btn" type="button" aria-label="Continue with Google">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M17.64 9.2c0-.638-.057-1.252-.164-1.84H9v3.48h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908C16.658 14.313 17.64 11.945 17.64 9.2z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.859-3.048.859-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        <span class="sl">Continue with Google</span>
+        <span class="sp" aria-hidden="true"></span>
+      </button>
+
+      <div class="or"><span>or sign in with email</span></div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <div class="field-top"><label for="email">Email address</label></div>
+          <div class="wrap">
+            <input type="email" id="email" placeholder="ada@example.com" autocomplete="email"/>
+            <span class="fi" style="cursor:default" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 5.5l7 4 7-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </span>
+          </div>
+          <div class="fe" id="em-err">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Enter a valid email address
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-top">
+            <label for="password">Password</label>
+            <!-- BUG 1 FIX: Forgot password fully wired -->
+            <a href="#" id="forgot-link">Forgot password?</a>
+          </div>
+          <div class="wrap">
+            <input type="password" id="password" placeholder="••••••••••" autocomplete="current-password"/>
+            <button type="button" class="fi" id="eye-btn" aria-label="Show or hide password">
+              <svg id="eye-svg" width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="fe" id="pw-err">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- BUG 4 FIX: loading state wired -->
+        <button type="submit" class="sub-btn" id="login-btn">
+          <span class="sl">Log in</span>
+          <span class="sp" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <p class="foot">Don't have an account? <a href="signup.html">Sign up free</a></p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="fw">
+    <div class="fg">
+      <div class="fb-brand">
+        <a href="../index.html" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;color:#F2F0EB;text-decoration:none;display:flex;align-items:center;gap:10px">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <rect width="36" height="36" rx="10" fill="#13141A"/>
+            <rect width="36" height="36" rx="10" fill="url(#lgf)" opacity=".18"/>
+            <path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="28" cy="27" r="1.6" fill="#00E5B0"/>
+            <defs><linearGradient id="lgf" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B5EFF"/><stop offset="100%" stop-color="#00E5B0"/></linearGradient></defs>
+          </svg>AltiLearn
+        </a>
+        <p>Microlearning that actually sticks. Build skills in minutes a day.</p>
+      </div>
+      <div class="fc"><h5>Learn</h5><ul>
+        <li><a href="courses.html">Browse courses</a></li>
+        <li><a href="paths.html">Learning paths</a></li>
+        <li><a href="certificates.html">Certificates</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul></div>
+      <div class="fc"><h5>Teach</h5><ul>
+        <li><a href="teach.html">Start teaching</a></li>
+        <li><a href="instructor-guide.html">Instructor guide</a></li>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="affiliate.html">Affiliate</a></li>
+      </ul></div>
+      <div class="fc"><h5>Company</h5><ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="careers.html">Careers</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="fbot">
+      <p>© 2026 AltiLearn. All rights reserved.</p>
+      <div class="flinks">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { auth, googleProvider, onAuthChange, updateNavForAuth, logout } from "./auth.js";
+  import {
+    signInWithEmailAndPassword,
+    signInWithPopup, sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const ERR = {
+    "auth/invalid-credential":     "Incorrect email or password.",
+    "auth/invalid-email":          "That email address doesn't look right.",
+    "auth/user-not-found":         "No account found with this email.",
+    "auth/wrong-password":         "Incorrect password. Try again.",
+    "auth/user-disabled":          "This account has been disabled.",
+    "auth/too-many-requests":      "Too many attempts — wait a minute.",
+    "auth/network-request-failed": "Network error — check your connection.",
+    "auth/popup-closed-by-user":   "Google sign-in was cancelled.",
+    "auth/cancelled-popup-request": null,
+    "auth/unauthorized-domain":    "Add this domain in Firebase Console → Authentication → Authorized Domains.",
+  };
+
+  /* ── BUG 3 FIX: hide body, show only if not logged in ── */
+  onAuthChange(async user => {
+    if (user) {
+      window.location.href = "../index.html";
+      return; /* stay hidden — redirect fires */
+    }
+    document.body.style.visibility = "visible";
+    await updateNavForAuth(null);
+  });
+
+  /* ── Helpers ── */
+  function showBanner(msg, type = "err") {
+    if (!msg) return;
+    const b = document.getElementById("banner");
+    b.className = `banner ${type} show`;
+    document.getElementById("banner-msg").innerHTML = msg;
+  }
+  function clearBanner() { document.getElementById("banner").classList.remove("show"); }
+  function setLoad(id, on, text) {
+    const el = document.getElementById(id);
+    el.disabled = on; el.classList.toggle("loading", on);
+    if (text) el.querySelector(".sl").textContent = text;
+  }
+
+  /* ── Email login ── */
+  document.getElementById("login-form").addEventListener("submit", async e => {
+    e.preventDefault(); clearBanner();
+    const em = document.getElementById("email");
+    const pw = document.getElementById("password");
+    const eme = document.getElementById("em-err");
+    const pwe = document.getElementById("pw-err");
+    let ok = true;
+    eme.classList.remove("show"); em.classList.remove("err");
+    pwe.classList.remove("show"); pw.classList.remove("err");
+    if (!em.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) {
+      eme.classList.add("show"); em.classList.add("err"); ok = false;
+    }
+    if (!pw.value || pw.value.length < 6) {
+      pwe.classList.add("show"); pw.classList.add("err"); ok = false;
+    }
+    if (!ok) return;
+    /* BUG 4 FIX: immediate loading state */
+    setLoad("login-btn", true, "Signing in...");
+    try {
+      await signInWithEmailAndPassword(auth, em.value.trim(), pw.value);
+    } catch(err) {
+      setLoad("login-btn", false, "Log in");
+      showBanner(ERR[err.code] || "Login failed. Check your details.");
+    }
+  });
+
+  /* ── Google login ── */
+  document.getElementById("google-btn").addEventListener("click", async () => {
+    clearBanner();
+    setLoad("google-btn", true);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch(err) {
+      setLoad("google-btn", false);
+      showBanner(ERR[err.code] || "Google sign-in failed.");
+    }
+  });
+
+  /* ── BUG 1 FIX: Forgot password — fully wired ── */
+  document.getElementById("forgot-link").addEventListener("click", async e => {
+    e.preventDefault(); clearBanner();
+    const email = document.getElementById("email").value.trim();
+    if (!email) {
+      showBanner("Enter your email address above first, then click Forgot password.");
+      document.getElementById("email").focus();
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      /* BUG 1 FIX: green success banner */
+      showBanner(`Reset link sent to <strong>${email}</strong> — check your inbox.`, "ok");
+    } catch(err) {
+      showBanner(ERR[err.code] || "Couldn't send reset email. Check the address.");
+    }
+  });
+
+  /* ── Password toggle ── */
+  let pwVis = false;
+  document.getElementById("eye-btn").addEventListener("click", () => {
+    pwVis = !pwVis;
+    document.getElementById("password").type = pwVis ? "text" : "password";
+    document.getElementById("eye-svg").innerHTML = pwVis
+      ? `<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>`
+      : `<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>`;
+  });
+
+  /* ── Clear errors on input ── */
+  ["email","password"].forEach(id => {
+    document.getElementById(id)?.addEventListener("input", () => {
+      document.getElementById(id).classList.remove("err"); clearBanner();
+    });
+  });
+</script>
+</body>
+</html>
