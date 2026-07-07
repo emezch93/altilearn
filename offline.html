@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're offline — AltiLearn</title>
+  <link rel="manifest" href="/pwa/manifest.json">
+  <meta name="theme-color" content="#1A56DB">
+  <link rel="apple-touch-icon" href="/pwa/icons/icon-192.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0D1B2E;
+      --surface:  #1A2B42;
+      --border:   #243750;
+      --brand:    #1A56DB;
+      --accent:   #4F8EF7;
+      --text:     #E8EEF7;
+      --muted:    #7A90AD;
+      --radius:   14px;
+    }
+
+    body {
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+
+    /* ── Signal animation ── */
+    .signal {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .signal__ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--brand);
+      opacity: 0;
+      animation: pulse 2.4s ease-out infinite;
+    }
+    .signal__ring:nth-child(2) { animation-delay: 0.8s; }
+    .signal__ring:nth-child(3) { animation-delay: 1.6s; }
+
+    @keyframes pulse {
+      0%   { transform: scale(0.4); opacity: 0.7; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .signal__icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .signal__icon svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Retry button ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--brand);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn:hover  { background: #1648c4; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.3s;
+    }
+
+    .btn.spinning svg { animation: spin 0.6s linear; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Status chip ── */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 1.25rem;
+    }
+
+    .status__dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #EF4444;
+      flex-shrink: 0;
+    }
+
+    .status__dot.online { background: #22C55E; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── Cached pages hint ── */
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hint a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .hint a:hover { text-decoration: underline; }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .logo__mark {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .logo__wordmark {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .signal__ring { animation: none; opacity: 0.2; }
+      .btn.spinning svg { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo"><svg class="logo__mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#13141A"/><rect width="36" height="36" rx="10" fill="url(#al-grad)" opacity="0.18"/><path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/><path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="28" cy="27" r="1.6" fill="#00E5B0"/><defs><linearGradient id="al-grad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7B5EFF"/><stop offset="100%" stop-color="#00E5B0"/></linearGradient></defs></svg><span class="logo__wordmark">AltiLearn</span></div>
+
+  <!-- Animated signal rings -->
+  <div class="signal" aria-hidden="true">
+    <div class="signal__ring"></div>
+    <div class="signal__ring"></div>
+    <div class="signal__ring"></div>
+    <div class="signal__icon">
+      <!-- Wifi-off icon -->
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="1" y1="1" x2="23" y2="23"/>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+        <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <h1>You're offline</h1>
+    <p>Check your connection and try again. Some pages you've visited recently may still be available below.</p>
+
+    <button class="btn" id="retryBtn" onclick="retryConnection()">
+      <svg viewBox="0 0 24 24" id="retryIcon">
+        <polyline points="23 4 23 10 17 10"/>
+        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+      Try again
+    </button>
+
+    <div class="status" id="statusChip">
+      <span class="status__dot" id="statusDot"></span>
+      <span id="statusText">No internet connection</span>
+    </div>
+
+    <hr class="divider">
+
+    <p class="hint">
+      Pages that work offline:
+      <a href="/index.html" target="_self">Home</a> ·
+      <a href="/sub-homepages/courses.html" target="_self">Courses</a> ·
+      <a href="/sub-homepages/paths.html" target="_self">Paths</a> ·
+      <a href="/sub-homepages/login.html" target="_self">Login</a>
+    </p>
+  </div>
+
+  <script>
+    const btn      = document.getElementById('retryBtn');
+    const dot      = document.getElementById('statusDot');
+    const statusTx = document.getElementById('statusText');
+
+    function updateStatus() {
+      if (navigator.onLine) {
+        dot.classList.add('online');
+        statusTx.textContent = 'Connection restored';
+      } else {
+        dot.classList.remove('online');
+        statusTx.textContent = 'No internet connection';
+      }
+    }
+
+    function retryConnection() {
+      btn.classList.add('spinning');
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.classList.remove('spinning');
+        btn.disabled = false;
+
+        if (navigator.onLine) {
+          window.location.href = document.referrer || '/';
+        } else {
+          updateStatus();
+        }
+      }, 800);
+    }
+
+    window.addEventListener('online',  () => {
+      updateStatus();
+      // Auto-redirect after 1.5s once connection is back
+      setTimeout(() => { window.location.href = document.referrer || '/'; }, 1500);
+    });
+
+    window.addEventListener('offline', updateStatus);
+
+    updateStatus();
+  </script>
+</body>
+</html>

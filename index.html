@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AltiLearn — Learn Skills in Minutes</title>
+  <meta name="description" content="AltiLearn is a microlearning platform where anyone can learn skills, teach courses, and earn from their knowledge — one bite-sized lesson at a time." />
+  <meta property="og:title" content="AltiLearn — Learn Skills in Minutes" />
+  <meta property="og:description" content="Microlearning that actually sticks. Short lessons, real skills, zero fluff." />
+  <meta name="theme-color" content="#0B0C10" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="pwa/manifest.json">
+<meta name="theme-color" content="#1A56DB">
+<link rel="apple-touch-icon" href="pwa/icons/apple-touch-icon.png">
+<link rel="icon" href="pwa/icons/favicon-32.png" sizes="32x32">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0B0C10;
+      --surface: #13141A;
+      --surface-2: #1A1B24;
+      --mint: #00E5B0;
+      --mint-dim: rgba(0,229,176,0.12);
+      --mint-glow: rgba(0,229,176,0.25);
+      --violet: #7B5EFF;
+      --violet-dim: rgba(123,94,255,0.12);
+      --chalk: #F2F0EB;
+      --mist: #9B99A8;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--chalk);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── UTILITIES ─── */
+    .container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .mint { color: var(--mint); }
+    .violet { color: var(--violet); }
+    .mist { color: var(--mist); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 100px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+    .btn:active { transform: translateY(0); opacity: 1; }
+
+    .btn-primary {
+      background: var(--mint);
+      color: #07140F;
+      font-weight: 700;
+      box-shadow: 0 0 0 0 var(--mint-glow);
+    }
+    .btn-primary:hover { box-shadow: 0 0 28px var(--mint-glow); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--chalk);
+      border: 1px solid var(--border-hover);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.28); }
+
+    .btn-violet {
+      background: var(--violet);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--chalk);
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(11,12,16,0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--chalk);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--mist);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 100px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-links a:hover {
+      color: var(--chalk);
+      background: rgba(255,255,255,0.06);
+    }
+    .nav-ctas {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-ctas .btn { padding: 9px 20px; font-size: 14px; }
+
+    .nav-mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--chalk);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 144px 0 96px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(ellipse at center, rgba(0,229,176,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mint-dim);
+      border: 1px solid rgba(0,229,176,0.2);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--mint);
+      margin-bottom: 24px;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero-title {
+      font-size: clamp(40px, 5vw, 62px);
+      margin-bottom: 24px;
+    }
+    .hero-title .line-accent {
+      display: block;
+      background: linear-gradient(90deg, var(--mint), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 18px;
+      color: var(--mist);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-social-proof {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 36px;
+    }
+    .hero-avatars {
+      display: flex;
+    }
+    .hero-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      margin-right: -10px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+    }
+    .hero-avatar:last-child { margin-right: 0; }
+    .a1 { background: #7B5EFF; }
+    .a2 { background: #00E5B0; color: #07140F; }
+    .a3 { background: #FF7055; }
+    .a4 { background: #F2A623; color: #07140F; }
+    .hero-social-text { font-size: 13px; color: var(--mist); }
+    .hero-social-text strong { color: var(--chalk); font-weight: 500; }
+
+    /* ─── MICRO-LESSON CARD (Signature Element) ─── */
+    .hero-card-wrap {
+      position: relative;
+    }
+    .hero-card-glow {
+      position: absolute;
+      inset: -60px;
+      background: radial-gradient(ellipse at 50% 40%, rgba(123,94,255,0.13) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .micro-card {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-xl);
+      padding: 24px 28px 28px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 0 rgba(0,229,176,0.22);
+    }
+    .micro-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0;
+    }
+    .micro-card-course {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .micro-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--violet-dim);
+      border: 1px solid rgba(123,94,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .micro-card-meta { }
+    .micro-card-module {
+      font-size: 12px;
+      color: var(--violet);
+      font-weight: 500;
+    }
+    .micro-card-title {
+      font-size: 13px;
+      color: var(--chalk);
+      font-weight: 500;
+    }
+    
+    
+    
+    
+    
+    
+
+    /* Quiz states */
+    
+    
+    .quiz-option:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.07);
+    }
+    .quiz-option.correct {
+      border-color: var(--mint);
+      background: var(--mint-dim);
+      color: var(--mint);
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,80,80,0.5);
+      background: rgba(255,80,80,0.08);
+      color: #ff8080;
+    }
+    .quiz-option.correct .opt-key { color: var(--mint); border-color: var(--mint); }
+    .opt-key {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: var(--mist);
+    }
+    
+    
+    .quiz-feedback.show { display: block; }
+
+    /* ─── HERO RIGHT PANEL ─── */
+    
+    
+    
+    
+    
+
+    /* Quiz question styled as a callout, not a box */
+    
+    .quiz-question-text {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--chalk);
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    /* ─── TICKER ─── */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      overflow: hidden;
+      background: rgba(255,255,255,0.018);
+    }
+    .ticker-track {
+      display: flex;
+      gap: 48px;
+      animation: ticker 28s linear infinite;
+      width: max-content;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker { to { transform: translateX(-50%); } }
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--mist);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ticker-item strong { color: var(--chalk); font-weight: 500; }
+    .ticker-sep {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--border-hover);
+      flex-shrink: 0;
+    }
+
+    /* ─── FEATURES ─── */
+    .features {
+      padding: 100px 0;
+    }
+    .features-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 64px;
+    }
+    .features-header .section-title { font-size: clamp(28px, 4vw, 44px); }
+    .features-header p { color: var(--mist); margin-top: 16px; font-size: 17px; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    }
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+    .fi-mint { background: var(--mint-dim); }
+    .fi-violet { background: var(--violet-dim); }
+    .fi-amber { background: rgba(242,166,35,0.1); }
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--chalk);
+    }
+    .feature-card p { font-size: 14px; color: var(--mist); line-height: 1.7; }
+
+    /* Featured card spans 2 cols */
+    .feature-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .feature-card.featured .feature-content { }
+    .feature-card.featured .feature-visual {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      font-size: 13px;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .stat-item { }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--mint);
+      line-height: 1;
+    }
+    .stat-lbl { font-size: 12px; color: var(--mist); margin-top: 4px; }
+
+    /* ─── HOW IT WORKS ─── */
+    .how {
+      padding: 100px 0;
+      background: linear-gradient(180deg, transparent, rgba(123,94,255,0.04), transparent);
+    }
+    .how-header {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 64px;
+    }
+    .how-header .section-title { font-size: clamp(28px, 4vw, 42px); }
+    .how-header p { color: var(--mist); margin-top: 16px; }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      position: relative;
+    }
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 44px;
+      left: 12.5%;
+      right: 12.5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hover), var(--violet), var(--border-hover), transparent);
+    }
+    .how-step {
+      padding: 0 20px;
+      text-align: center;
+      position: relative;
+    }
+    .how-step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--violet);
+      position: relative;
+      z-index: 1;
+    }
+    .how-step h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--chalk);
+    }
+    .how-step p { font-size: 13px; color: var(--mist); line-height: 1.65; }
+
+    /* ─── INSTRUCTOR SPLIT ─── */
+    .instructor {
+      padding: 100px 0;
+    }
+    .instructor-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .instructor-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: relative;
+    }
+    .instructor-visual::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, rgba(123,94,255,0.3), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .earnings-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    .bar {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      background: var(--violet-dim);
+      border: 1px solid rgba(123,94,255,0.25);
+      position: relative;
+      overflow: hidden;
+      min-height: 16px;
+    }
+    .bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(0deg, var(--violet), rgba(123,94,255,0.3));
+      height: var(--h);
+      border-radius: 3px 3px 0 0;
+    }
+    .bar.highlight::after { background: linear-gradient(0deg, var(--mint), rgba(0,229,176,0.3)); }
+    .bar.highlight { border-color: rgba(0,229,176,0.3); background: var(--mint-dim); }
+
+    .earnings-total {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--chalk);
+      margin-bottom: 4px;
+    }
+    .earnings-sub {
+      font-size: 13px;
+      color: var(--mist);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .earnings-badge {
+      background: var(--mint-dim);
+      color: var(--mint);
+      border: 1px solid rgba(0,229,176,0.2);
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .instructor-perks {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .perk-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--violet-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      margin-top: 1px;
+    }
+    .perk-text { font-size: 14px; color: var(--mist); }
+    .perk-text strong { color: var(--chalk); font-weight: 500; }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials {
+      padding: 100px 0;
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .testimonials-header .section-title { font-size: clamp(26px, 3.5vw, 40px); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .testi-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 16px;
+    }
+    .star { color: #F2A623; font-size: 14px; }
+    .testi-quote {
+      font-size: 15px;
+      color: var(--chalk);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .testi-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-display);
+    }
+    .testi-name { font-size: 14px; font-weight: 500; color: var(--chalk); }
+    .testi-role { font-size: 12px; color: var(--mist); }
+
+    /* ─── PRICING TEASER ─── */
+    .pricing {
+      padding: 100px 0;
+    }
+    .pricing-header {
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto 56px;
+    }
+    .pricing-header .section-title { font-size: clamp(28px, 4vw, 42px); }
+    .pricing-header p { color: var(--mist); margin-top: 14px; }
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: relative;
+    }
+    .plan-card.featured-plan {
+      border-color: rgba(123,94,255,0.4);
+      background: linear-gradient(135deg, rgba(123,94,255,0.07) 0%, var(--surface) 60%);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--violet);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .plan-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--mist);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+    .plan-price {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--chalk);
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .plan-price span { font-size: 16px; font-weight: 400; color: var(--mist); }
+    .plan-desc { font-size: 13px; color: var(--mist); margin-bottom: 24px; }
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .plan-features li {
+      font-size: 14px;
+      color: var(--chalk);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .plan-features li::before {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--mint-dim);
+      border: 1px solid rgba(0,229,176,0.25);
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%2300E5B0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .plan-btn { width: 100%; justify-content: center; }
+
+    /* ─── FINAL CTA ─── */
+    .final-cta {
+      padding: 100px 0;
+    }
+    .final-cta-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 72px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta-inner::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(123,94,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta-inner .section-title {
+      font-size: clamp(28px, 4vw, 52px);
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .final-cta-inner p {
+      font-size: 17px;
+      color: var(--mist);
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .final-cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 36px;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--mist);
+      margin-top: 12px;
+      max-width: 260px;
+      line-height: 1.65;
+    }
+    .footer-col h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--chalk);
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 14px;
+      color: var(--mist);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-col ul li a:hover { color: var(--chalk); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { font-size: 13px; color: var(--mist); }
+    .footer-bottom-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-bottom-links a {
+      font-size: 13px;
+      color: var(--mist);
+      text-decoration: none;
+    }
+    .footer-bottom-links a:hover { color: var(--chalk); }
+
+    /* ─── MOBILE NAV ─── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 0;
+      right: 0;
+      background: rgba(11,12,16,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 99;
+      padding: 20px 24px;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: var(--mist);
+      text-decoration: none;
+      font-size: 15px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-nav a:last-child { border-bottom: none; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-card-wrap { max-width: 480px; margin: 0 auto; }
+      .fm-1, .fm-2 { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .feature-card.featured { grid-column: span 2; }
+      .how-steps { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      .how-steps::before { display: none; }
+      .instructor-inner { grid-template-columns: 1fr; gap: 48px; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-cards { grid-template-columns: 1fr; max-width: 400px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .nav-links { display: none; }
+      .nav-mobile-toggle { display: block; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 120px 0 72px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+      .how-steps { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .final-cta-inner { padding: 48px 24px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+      .nav-ctas .btn-ghost { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ticker-track { animation: none; }
+      .hero-badge-dot { animation: none; }
+      .fm-1, .fm-2 { animation: none; }
+      .feature-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="al-nav-root"></div>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-inner">
+
+        <!-- Left: copy -->
+        <div class="hero-content">
+          <div class="hero-badge" role="note">
+            <span class="hero-badge-dot" aria-hidden="true"></span>
+            Now in open beta — 10,000+ learners
+          </div>
+          <h1 id="hero-heading" class="section-title hero-title">
+            Skills that stick.<br/>
+            <span class="line-accent">Lessons that fit.</span>
+          </h1>
+          <p class="hero-desc">
+            AltiLearn delivers expert-crafted microlessons in under 10 minutes each. Learn on your commute. Teach what you know. Earn from your expertise.
+          </p>
+          <div class="hero-actions">
+            <a href="sub-homepages/signup.html" target="_self" class="btn btn-primary">
+              Start for free
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#how" class="btn btn-ghost">See how it works</a>
+          </div>
+          <div class="hero-social-proof" aria-label="Social proof">
+            <div class="hero-avatars" aria-hidden="true">
+              <div class="hero-avatar a1">JK</div>
+              <div class="hero-avatar a2">OM</div>
+              <div class="hero-avatar a3">SA</div>
+              <div class="hero-avatar a4">TC</div>
+            </div>
+            <p class="hero-social-text"><strong>10,000+</strong> learners already building skills daily</p>
+          </div>
+        </div>
+
+        <!-- Right: platform stats panel -->
+        <div class="hero-card-wrap" aria-label="AltiLearn at a glance">
+          <div class="hero-card-glow" aria-hidden="true"></div>
+          <div class="micro-card">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="micro-card-icon" aria-hidden="true">📊</div>
+                <div>
+                  <div class="micro-card-module">Platform overview</div>
+                  <div class="micro-card-title">AltiLearn at a glance</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mist)">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--mint);display:inline-block;animation:pulse-dot 2s infinite" aria-hidden="true"></span>
+                Live
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border);margin-bottom:20px"></div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+              <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--mint);line-height:1">10K+</div>
+                <div style="font-size:12px;color:var(--mist);margin-top:4px">Active learners</div>
+              </div>
+              <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--violet);line-height:1">500+</div>
+                <div style="font-size:12px;color:var(--mist);margin-top:4px">Courses available</div>
+              </div>
+              <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--chalk);line-height:1">87%</div>
+                <div style="font-size:12px;color:var(--mist);margin-top:4px">Completion rate</div>
+              </div>
+              <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:#F2A623;line-height:1">70%</div>
+                <div style="font-size:12px;color:var(--mist);margin-top:4px">Instructor revenue</div>
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border);margin-bottom:20px"></div>
+
+            <div style="font-size:11px;font-weight:600;color:var(--mist);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Recent activity</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#7B5EFF;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:#fff">AO</div>
+                <div style="flex:1;font-size:13px;color:var(--chalk)">Completed <span style="color:var(--mint)">CSS Mastery</span></div>
+                <div style="font-size:11px;color:var(--mist);white-space:nowrap">2m ago</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#00E5B0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#07140F;flex-shrink:0">JK</div>
+                <div style="flex:1;font-size:13px;color:var(--chalk)">Enrolled in <span style="color:var(--mint)">React Crash Course</span></div>
+                <div style="font-size:11px;color:var(--mist);white-space:nowrap">5m ago</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#F2A623;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#07140F;flex-shrink:0">DK</div>
+                <div style="flex:1;font-size:13px;color:var(--chalk)">Published <span style="color:var(--violet)">UI Design 101</span></div>
+                <div style="font-size:11px;color:var(--mist);white-space:nowrap">12m ago</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TICKER ─── -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-track">
+      <!-- Original set -->
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>JavaScript</strong> Fundamentals</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>UI Design</strong> Principles</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Python</strong> for Beginners</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Digital Marketing</strong> Mastery</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Data Analysis</strong> with Excel</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Copywriting</strong> that Converts</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>React</strong> Crash Course</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Video Editing</strong> Basics</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Graphic Design</strong> 101</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>No-Code</strong> Tools</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>JavaScript</strong> Fundamentals</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>UI Design</strong> Principles</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Python</strong> for Beginners</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Digital Marketing</strong> Mastery</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Data Analysis</strong> with Excel</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Copywriting</strong> that Converts</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>React</strong> Crash Course</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Video Editing</strong> Basics</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>Graphic Design</strong> 101</div>
+      <div class="ticker-item"><span class="ticker-sep"></span><strong>No-Code</strong> Tools</div>
+    </div>
+  </div>
+
+  <!-- ─── FEATURES ─── -->
+  <section class="features" id="features" aria-labelledby="features-heading">
+    <div class="container">
+      <div class="features-header">
+        <span class="section-label">Why AltiLearn</span>
+        <h2 id="features-heading" class="section-title">Learning that respects your time</h2>
+        <p>Every feature is built around one idea: you should walk away from every session with something real.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <!-- Featured: microlearning -->
+        <div class="feature-card featured" aria-labelledby="feat-micro">
+          <div class="feature-content">
+            <div class="feature-icon fi-mint" aria-hidden="true">⚡</div>
+            <h3 id="feat-micro">Bite-sized lessons</h3>
+            <p>Every lesson is designed for 5–10 minute sessions. Learn on your commute, during lunch, or whenever you have a few minutes to spare. No 4-hour video marathons.</p>
+            <div class="stat-row" aria-label="Platform statistics">
+              <div class="stat-item">
+                <div class="stat-num">87%</div>
+                <div class="stat-lbl">Completion rate</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">7 min</div>
+                <div class="stat-lbl">Avg lesson length</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">3×</div>
+                <div class="stat-lbl">Better retention</div>
+              </div>
+            </div>
+          </div>
+          <div class="feature-visual" aria-hidden="true">
+            <div style="font-size:12px; color: var(--mist); margin-bottom: 14px; font-weight:500;">Today's path</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--mint-dim);border:1px solid rgba(0,229,176,0.2);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#07140F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <span style="font-size:13px;color:var(--mint);font-weight:500;">Flexbox basics</span>
+                <span style="font-size:11px;color:var(--mist);margin-left:auto;">5 min</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--violet);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--violet);">2</div>
+                <span style="font-size:13px;color:var(--chalk);">CSS Grid layout</span>
+                <span style="font-size:11px;color:var(--mist);margin-left:auto;">7 min</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border-hover);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--mist);">3</div>
+                <span style="font-size:13px;color:var(--mist);">Responsive design</span>
+                <span style="font-size:11px;color:var(--mist);margin-left:auto;">6 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" aria-labelledby="feat-progress">
+          <div class="feature-icon fi-violet" aria-hidden="true">📈</div>
+          <h3 id="feat-progress">Visual progress tracking</h3>
+          <p>See exactly where you are in every course. Streaks, completion rings, and skill milestones keep you moving forward.</p>
+        </div>
+
+        <div class="feature-card" aria-labelledby="feat-mobile">
+          <div class="feature-icon fi-mint" aria-hidden="true">📱</div>
+          <h3 id="feat-mobile">Mobile-first design</h3>
+          <p>Built for your phone. Optimized for thumbs. Every interaction works as well on a 5-inch screen as it does on a desktop.</p>
+        </div>
+
+        <div class="feature-card" aria-labelledby="feat-quiz">
+          <div class="feature-icon fi-amber" aria-hidden="true">🧠</div>
+          <h3 id="feat-quiz">Active recall quizzes</h3>
+          <p>Every lesson ends with quick-fire questions that force your brain to retrieve what it just learned. Science says this triples retention.</p>
+        </div>
+
+        <div class="feature-card" aria-labelledby="feat-earn">
+          <div class="feature-icon fi-violet" aria-hidden="true">💰</div>
+          <h3 id="feat-earn">Earn from your knowledge</h3>
+          <p>Instructors keep 70% of every sale. No minimum audience size. No gatekeepers. Publish your first course in under an hour.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── HOW IT WORKS ─── -->
+  <section class="how" id="how" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="how-header">
+        <span class="section-label">The process</span>
+        <h2 id="how-heading" class="section-title">From zero to skilled in four steps</h2>
+        <p style="color: var(--mist); margin-top: 16px;">Pick a skill. Follow a path. Prove it. Repeat.</p>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num" aria-hidden="true">1</div>
+          <h4>Find your path</h4>
+          <p>Browse curated learning paths by skill, role, or goal. Every path is structured for progressive mastery.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num" aria-hidden="true">2</div>
+          <h4>Learn in micro-doses</h4>
+          <p>Each lesson is 5–10 minutes. Watch, read, or listen — your choice. No overwhelm, no filler.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num" aria-hidden="true">3</div>
+          <h4>Test what you learned</h4>
+          <p>Quick quizzes after each lesson cement the knowledge. Spaced repetition brings forgotten concepts back.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num" aria-hidden="true">4</div>
+          <h4>Earn your certificate</h4>
+          <p>Complete a path and earn a verifiable certificate. Share it on LinkedIn or keep it as your own record.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── INSTRUCTOR SECTION ─── -->
+  <section class="instructor" id="instructors" aria-labelledby="instructor-heading">
+    <div class="container">
+      <div class="instructor-inner">
+
+        <!-- Visual: earnings chart -->
+        <div class="instructor-visual" aria-label="Instructor earnings chart showing monthly growth">
+          <p style="font-size:12px;color:var(--mist);font-weight:500;margin-bottom:12px;">Monthly earnings — Sarah K., UX Design</p>
+          <div class="earnings-chart" aria-hidden="true">
+            <div class="bar" style="--h: 22%;"></div>
+            <div class="bar" style="--h: 35%;"></div>
+            <div class="bar" style="--h: 40%;"></div>
+            <div class="bar" style="--h: 52%;"></div>
+            <div class="bar" style="--h: 48%;"></div>
+            <div class="bar" style="--h: 68%;"></div>
+            <div class="bar highlight" style="--h: 85%;"></div>
+          </div>
+          <div class="earnings-total" aria-label="Total earnings this month: dollar 4,820">$4,820</div>
+          <div class="earnings-sub">
+            <span>this month</span>
+            <span class="earnings-badge" aria-label="Up 38 percent from last month">↑ 38%</span>
+          </div>
+          <div style="border-top: 1px solid var(--border); margin: 24px 0;"></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <div style="font-size:11px;color:var(--mist);margin-bottom:4px;">Active students</div>
+              <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--chalk);">342</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--mist);margin-bottom:4px;">Courses published</div>
+              <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--chalk);">3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="instructor-copy">
+          <span class="section-label">For instructors</span>
+          <h2 id="instructor-heading" class="section-title" style="font-size: clamp(26px, 3.5vw, 40px); margin-bottom: 18px;">
+            Your knowledge is worth more than you think
+          </h2>
+          <p style="color: var(--mist); margin-bottom: 32px; font-size: 16px;">
+            Turn what you already know into a course that earns while you sleep. AltiLearn handles payments, hosting, and delivery. You just teach.
+          </p>
+          <div class="instructor-perks" aria-label="Instructor benefits">
+            <div class="perk">
+              <div class="perk-icon" aria-hidden="true">💸</div>
+              <div class="perk-text"><strong>70% revenue share.</strong> Industry-leading. No exceptions.</div>
+            </div>
+            <div class="perk">
+              <div class="perk-icon" aria-hidden="true">🚀</div>
+              <div class="perk-text"><strong>Launch in under an hour.</strong> Our course builder is the fastest in the game.</div>
+            </div>
+            <div class="perk">
+              <div class="perk-icon" aria-hidden="true">📊</div>
+              <div class="perk-text"><strong>Deep analytics.</strong> See exactly where students engage, struggle, and drop off.</div>
+            </div>
+            <div class="perk">
+              <div class="perk-icon" aria-hidden="true">🌍</div>
+              <div class="perk-text"><strong>Global reach.</strong> Sell to learners in 90+ countries from day one.</div>
+            </div>
+          </div>
+          <div style="margin-top: 36px;">
+            <a href="sub-homepages/teach.html" class="btn btn-violet" target="_self">Start teaching today →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TESTIMONIALS ─── -->
+  <section class="testimonials" aria-labelledby="testi-heading">
+    <div class="container">
+      <div class="testimonials-header">
+        <span class="section-label">What people say</span>
+        <h2 id="testi-heading" class="section-title">Learners love it. Instructors earn from it.</h2>
+      </div>
+      <div class="testimonials-grid">
+
+        <div class="testi-card">
+          <div class="testi-stars" aria-label="5 out of 5 stars">
+            <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          </div>
+          <p class="testi-quote">"I spent months trying to learn JavaScript from YouTube. In three weeks on AltiLearn I built my first portfolio project. The micro-lessons hit different — I actually retained it."</p>
+          <div class="testi-author">
+            <div class="testi-av a2" aria-hidden="true">AO</div>
+            <div>
+              <div class="testi-name">Amara Okonkwo</div>
+              <div class="testi-role">Junior Developer, Lagos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars" aria-label="5 out of 5 stars">
+            <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          </div>
+          <p class="testi-quote">"I published my first course on a Wednesday night. By Friday I had 14 paying students. No audience, no following — just a topic I know well. AltiLearn did the rest."</p>
+          <div class="testi-author">
+            <div class="testi-av a1" aria-hidden="true">DK</div>
+            <div>
+              <div class="testi-name">Daniel Kim</div>
+              <div class="testi-role">UX Instructor & Designer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-stars" aria-label="5 out of 5 stars">
+            <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          </div>
+          <p class="testi-quote">"My team needed to upskill fast. I curated a custom learning path on AltiLearn and assigned it to 12 people. Three months later, everyone levelled up. Zero faff."</p>
+          <div class="testi-author">
+            <div class="testi-av a3" aria-hidden="true">PR</div>
+            <div>
+              <div class="testi-name">Priya Rao</div>
+              <div class="testi-role">Head of Product, TechScale</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRICING ─── -->
+  <section class="pricing" id="pricing" aria-labelledby="pricing-heading">
+    <div class="container">
+      <div class="pricing-header">
+        <span class="section-label">Simple pricing</span>
+        <h2 id="pricing-heading" class="section-title">Start free. Upgrade when you're ready.</h2>
+        <p>No credit card required to get started. Cancel anytime.</p>
+      </div>
+      <div class="pricing-cards">
+
+        <div class="plan-card" aria-labelledby="plan-free">
+          <div class="plan-name" id="plan-free">Free</div>
+          <div class="plan-price">$0 <span>/ month</span></div>
+          <div class="plan-desc">Everything you need to start learning.</div>
+          <ul class="plan-features" aria-label="Free plan features">
+            <li>5 lessons per day</li>
+            <li>Access to 500+ free courses</li>
+            <li>Progress tracking</li>
+            <li>Mobile app access</li>
+          </ul>
+          <a href="sub-homepages/signup.html" class="btn btn-ghost plan-btn" target="_self">Get started free</a>
+        </div>
+
+        <div class="plan-card featured-plan" aria-labelledby="plan-pro">
+          <div class="plan-badge" aria-label="Most popular">Most popular</div>
+          <div class="plan-name" id="plan-pro">Pro</div>
+          <div class="plan-price">$12 <span>/ month</span></div>
+          <div class="plan-desc">Unlimited learning, unlimited potential.</div>
+          <ul class="plan-features" aria-label="Pro plan features">
+            <li>Unlimited lessons daily</li>
+            <li>Full course library access</li>
+            <li>Certificates of completion</li>
+            <li>Offline mobile downloads</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="sub-homepages/signup.html?plan=pro" class="btn btn-primary plan-btn">Start Pro trial</a>
+        </div>
+
+        <div class="plan-card" aria-labelledby="plan-team">
+          <div class="plan-name" id="plan-team">Team</div>
+          <div class="plan-price">$9 <span>/ seat / mo</span></div>
+          <div class="plan-desc">For teams that learn together.</div>
+          <ul class="plan-features" aria-label="Team plan features">
+            <li>Everything in Pro</li>
+            <li>Team analytics dashboard</li>
+            <li>Custom learning paths</li>
+            <li>Bulk enrolment tools</li>
+            <li>Dedicated account manager</li>
+          </ul>
+          <a href="sub-homepages/contact.html" class="btn btn-ghost plan-btn" target="_self">Talk to sales</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FINAL CTA ─── -->
+  <section class="final-cta" aria-labelledby="cta-heading">
+    <div class="container">
+      <div class="final-cta-inner">
+        <h2 id="cta-heading" class="section-title">
+          Your next skill is<br/>
+          <span class="line-accent" style="background: linear-gradient(90deg, var(--mint), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">7 minutes away.</span>
+        </h2>
+        <p>Join 10,000+ learners already building skills they're proud of. No commitment. No overwhelm. Just progress.</p>
+        <div class="final-cta-btns">
+          <a href="sub-homepages/signup.html" class="btn btn-primary" target="_self">
+            Start learning free
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="sub-homepages/teach.html" class="btn btn-ghost" target="_self">Become an instructor</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="font-size: 20px; display: inline-flex;" aria-label="AltiLearn">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;">
+              <rect width="36" height="36" rx="10" fill="#13141A"/>
+              <rect width="36" height="36" rx="10" fill="url(#al-grad-f)" opacity="0.18"/>
+              <path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <circle cx="28" cy="27" r="1.6" fill="#00E5B0"/>
+              <defs>
+                <linearGradient id="al-grad-f" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#7B5EFF"/>
+                  <stop offset="100%" stop-color="#00E5B0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            AltiLearn
+          </a>
+          <p>Microlearning that actually sticks. Build skills in minutes a day, every day.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Learn</h5>
+          <ul>
+            <li><a href="sub-homepages/courses.html" target="_self">Browse courses</a></li>
+            <li><a href="sub-homepages/paths.html" target="_self">Learning paths</a></li>
+            <li><a href="sub-homepages/certificates.html" target="_self">Certificates</a></li>
+            <li><a href="sub-homepages/pricing.html" target="_self">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Teach</h5>
+          <ul>
+            <li><a href="sub-homepages/teach.html" target="_self">Start teaching</a></li>
+            <li><a href="sub-homepages/instructor-guide.html" target="_self">Instructor guide</a></li>
+            <li><a href="sub-homepages/community.html" target="_self">Community</a></li>
+            <li><a href="sub-homepages/affiliate.html" target="_self">Affiliate program</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="sub-homepages/about.html" target="_self">About us</a></li>
+            <li><a href="sub-homepages/blog.html" target="_self">Blog</a></li>
+            <li><a href="sub-homepages/careers.html" target="_self">Careers</a></li>
+            <li><a href="sub-homepages/contact.html" target="_self">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AltiLearn. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="sub-homepages/privacy.html" target="_self">Privacy</a>
+          <a href="sub-homepages/terms.html" target="_self">Terms</a>
+          <a href="sub-homepages/cookies.html" target="_self">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── SCRIPTS ─── -->
+  <script>
+    // ── Nav scroll behavior
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // ── Mobile nav toggle
+    const toggle = document.getElementById('nav-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+    toggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen);
+    });
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', false);
+    }
+  </script>
+
+<script type="module">
+  /*
+   * auth.js path: relative to index.html
+   * Works on VS Code Live Server, GitHub Pages, and any static host.
+   * auth.js handles all nav rendering + logout wiring internally.
+   */
+  import { onAuthChange, updateNavForAuth } from "./sub-homepages/auth.js";
+   onAuthChange(async user => {
+  await updateNavForAuth(user);
+   });
+</script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('AltiLearn SW registered:', reg.scope))
+        .catch(err => console.error('AltiLearn SW registration failed:', err));
+    });
+  }
+
+  // Chrome/Edge no longer auto-show an install banner.
+  // We capture the event and drive install from our own button instead.
+  let deferredInstallPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    console.log('AltiLearn: install is available');
+    const btn = document.getElementById('install-app-btn');
+    if (btn) btn.style.display = 'inline-flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    console.log('AltiLearn: app installed');
+    const btn = document.getElementById('install-app-btn');
+    if (btn) btn.style.display = 'none';
+  });
+
+  async function triggerAltiLearnInstall() {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    console.log('AltiLearn install outcome:', outcome);
+    deferredInstallPrompt = null;
+  }
+</script>
+
+<button id="install-app-btn" onclick="triggerAltiLearnInstall()" style="display:none; position:fixed; bottom:24px; right:24px; z-index:999; align-items:center; gap:8px; padding:12px 20px; border-radius:999px; border:none; cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:14px; color:#0B0C10; background:linear-gradient(90deg, var(--mint), var(--violet)); box-shadow:0 8px 24px rgba(0,229,176,0.3);">
+  Install App
+</button>
+
+</body>
+</html>

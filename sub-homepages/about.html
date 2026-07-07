@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About Us — AltiLearn</title>
+<meta name="description" content="Learn the story behind AltiLearn — why we built it and what we believe about learning.">
+<meta name="theme-color" content="#0B0C10">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="/pwa/manifest.json">
+<meta name="theme-color" content="#1A56DB">
+<link rel="apple-touch-icon" href="/pwa/icons/icon-192.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0B0C10;--surface:#13141A;--surface-2:#1A1B24;
+  --mint:#00E5B0;--mint-dim:rgba(0,229,176,0.12);--mint-glow:rgba(0,229,176,0.25);
+  --violet:#7B5EFF;--violet-dim:rgba(123,94,255,0.12);
+  --chalk:#F2F0EB;--mist:#9B99A8;
+  --border:rgba(255,255,255,0.07);--border-hover:rgba(255,255,255,0.14);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-xl:28px;
+  --font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--chalk);font-family:var(--font-body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{width:100%;max-width:1100px;margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:100px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:transform .18s,opacity .18s,box-shadow .18s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);opacity:.92}
+.btn-primary{background:var(--mint);color:#07140F;font-weight:700}
+.btn-primary:hover{box-shadow:0 0 24px var(--mint-glow)}
+.btn-ghost{background:transparent;color:var(--chalk);border:1px solid var(--border-hover)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.28)}
+.btn-violet{background:var(--violet);color:#fff;font-weight:700}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
+nav.scrolled{background:rgba(11,12,16,0.88);backdrop-filter:blur(16px);border-color:var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;gap:24px}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--chalk);text-decoration:none;letter-spacing:-.03em;display:flex;align-items:center;gap:10px}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+.nav-links a{font-size:14px;color:var(--mist);text-decoration:none;padding:6px 12px;border-radius:100px;transition:color .15s,background .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--chalk);background:rgba(255,255,255,0.06)}
+.nav-ctas{display:flex;align-items:center;gap:10px}
+.nav-ctas .btn{padding:9px 18px;font-size:14px}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--chalk);padding:4px}
+/* PAGE HERO */
+.page-hero{padding:128px 0 72px;border-bottom:1px solid var(--border)}
+.page-hero-label{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);margin-bottom:14px}
+.page-hero h1{font-family:var(--font-display);font-weight:800;font-size:clamp(32px,5vw,56px);line-height:1.1;letter-spacing:-.025em;margin-bottom:18px}
+.page-hero p{font-size:18px;color:var(--mist);max-width:580px;line-height:1.75}
+/* CONTENT */
+.page-content{padding:72px 0 100px}
+h2.section-h{font-family:var(--font-display);font-weight:800;font-size:clamp(22px,3vw,32px);letter-spacing:-.02em;margin-bottom:14px}
+h3.sub-h{font-family:var(--font-display);font-weight:700;font-size:18px;margin-bottom:10px;color:var(--chalk)}
+p.body-text{color:var(--mist);font-size:15px;line-height:1.8;margin-bottom:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px}
+.card:hover{border-color:var(--border-hover)}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--mint-dim);border:1px solid rgba(0,229,176,0.18);border-radius:100px;padding:4px 12px;font-size:12px;color:var(--mint);font-weight:500}
+.divider{height:1px;background:var(--border);margin:48px 0}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:48px 0 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.footer-col h5{font-size:12px;font-weight:600;color:var(--chalk);margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{font-size:14px;color:var(--mist);text-decoration:none;transition:color .15s}
+.footer-col ul li a:hover{color:var(--chalk)}
+.footer-brand p{font-size:14px;color:var(--mist);margin-top:12px;max-width:240px;line-height:1.65}
+.footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-bottom p,.footer-bottom a{font-size:13px;color:var(--mist);text-decoration:none}
+.footer-bottom a:hover{color:var(--chalk)}
+.footer-links{display:flex;gap:20px}
+/* MOBILE */
+.mob-nav{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(11,12,16,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:99;padding:20px 24px;flex-direction:column;gap:4px}
+.mob-nav.open{display:flex}
+.mob-nav a{color:var(--mist);text-decoration:none;font-size:15px;padding:11px 0;border-bottom:1px solid var(--border)}
+@media(max-width:860px){.nav-links{display:none}.nav-toggle{display:block}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:540px){.footer-grid{grid-template-columns:1fr}.page-hero p{font-size:16px}.nav-ctas .btn-ghost{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:768px){.about-split{grid-template-columns:1fr!important}}</style>
+</head>
+<body>
+<nav id="nav">
+  <div class="container"><div class="nav-inner">
+    <a target="_self"href="../index.html" class="nav-logo"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0">
+  <rect width="36" height="36" rx="10" fill="#13141A"/>
+  <rect width="36" height="36" rx="10" fill="url(#al-g)" opacity="0.18"/>
+  <path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="28" cy="27" r="1.6" fill="#00E5B0"/>
+  <defs><linearGradient id="al-g" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+    <stop offset="0%" stop-color="#7B5EFF"/><stop offset="100%" stop-color="#00E5B0"/>
+  </linearGradient></defs>
+</svg>AltiLearn</a>
+    <ul class="nav-links"><li><a target="_self"href="./courses.html">Courses</a></li>
+<li><a target="_self"href="./paths.html">Paths</a></li>
+<li><a target="_self"href="./teach.html">Teach</a></li>
+<li><a target="_self"href="./pricing.html">Pricing</a></li></ul>
+    <div class="nav-ctas">
+      <a target="_self"href="./login.html" class="btn btn-ghost">Log in</a>
+      <a target="_self"href="./signup.html" class="btn btn-primary">Start free</a>
+    </div>
+    <button class="nav-toggle" id="nt" aria-label="Menu" aria-expanded="false">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><rect y="0" width="22" height="2" rx="1" fill="currentColor"/><rect y="7" width="16" height="2" rx="1" fill="currentColor"/><rect y="14" width="22" height="2" rx="1" fill="currentColor"/></svg>
+    </button>
+  </div></div>
+</nav>
+<nav class="mob-nav" id="mn">
+  <a target="_self"href="./courses.html">Browse Courses</a>
+  <a target="_self"href="./paths.html">Learning Paths</a>
+  <a target="_self"href="./teach.html">Teach on AltiLearn</a>
+  <a target="_self"href="./pricing.html">Pricing</a>
+  <a target="_self"href="./login.html">Log in</a>
+  <a target="_self"href="./signup.html" style="color:var(--mint);font-weight:600">Start learning →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <span class="page-hero-label">Our story</span>
+    <h1>We believe learning should<br><span style="background:linear-gradient(90deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">fit your life</span></h1>
+    <p>AltiLearn started with a simple frustration — too many platforms, too much fluff, too little time. We built the antidote.</p>
+  </div>
+</section>
+<section class="page-content">
+  <div class="container">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-bottom:80px">
+      <div>
+        <span class="tag">The origin</span>
+        <h2 class="section-h" style="margin-top:16px">Built out of frustration with how learning works</h2>
+        <p class="body-text">In 2024, our founders spent months trying to upskill on existing platforms. Every course was 40 hours long, structured for a different era, and designed to look impressive — not to actually teach. So we started over.</p>
+        <p class="body-text">The insight was simple: the brain retains far more from short, focused sessions than from hour-long video marathons. AltiLearn is built entirely around that science.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px">
+        <div style="font-size:13px;color:var(--mist);margin-bottom:24px;font-weight:500;text-transform:uppercase;letter-spacing:.07em">By the numbers</div>
+        <div style="margin-bottom:24px"><div style="font-family:var(--font-display);font-weight:800;font-size:36px;color:var(--mint)">10K+</div><div style="font-size:13px;color:var(--mist);margin-top:4px">Active learners</div></div><div style="margin-bottom:24px"><div style="font-family:var(--font-display);font-weight:800;font-size:36px;color:var(--chalk)">500+</div><div style="font-size:13px;color:var(--mist);margin-top:4px">Courses published</div></div><div style="margin-bottom:24px"><div style="font-family:var(--font-display);font-weight:800;font-size:36px;color:var(--violet)">70%</div><div style="font-size:13px;color:var(--mist);margin-top:4px">Revenue to instructors</div></div><div style="margin-bottom:24px"><div style="font-family:var(--font-display);font-weight:800;font-size:36px;color:var(--chalk)">87%</div><div style="font-size:13px;color:var(--mist);margin-top:4px">Course completion rate</div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="tag">The team</span>
+      <h2 class="section-h" style="margin-top:16px">Small team. Big conviction.</h2>
+      <p style="color:var(--mist);max-width:520px;margin:0 auto">We're a team of educators, engineers, and designers who believe the next generation of skills will be built in 7-minute sessions.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:#07140F">AE</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Adaeze Eze</div><div style="font-size:13px;color:var(--mist)">Co-founder & CEO</div></div><div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:#fff">KO</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Kelechi Obi</div><div style="font-size:13px;color:var(--mist)">Co-founder & CTO</div></div><div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:rgba(242,166,35,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:#F2A623">TN</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Temi Nwosu</div><div style="font-size:13px;color:var(--mist)">Head of Design</div></div><div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:var(--mint-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--mint)">SM</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Sara Mack</div><div style="font-size:13px;color:var(--mist)">Head of Growth</div></div><div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:var(--violet-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--violet)">JR</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Jude Rao</div><div style="font-size:13px;color:var(--mist)">Lead Engineer</div></div><div class="card" style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--chalk)">FO</div><div style="font-weight:700;color:var(--chalk);margin-bottom:4px">Funmi Oke</div><div style="font-size:13px;color:var(--mist)">Curriculum Lead</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="text-align:center">
+      <h2 class="section-h">Want to shape the future of learning?</h2>
+      <p style="color:var(--mist);margin-bottom:28px">We're hiring people who are obsessed with education, product, and impact.</p>
+      <a target="_self"href="./careers.html" class="btn btn-primary">See open roles</a>
+    </div>
+
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a target="_self"href="../index.html" class="nav-logo" style="font-size:19px"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0">
+  <rect width="36" height="36" rx="10" fill="#13141A"/>
+  <rect width="36" height="36" rx="10" fill="url(#al-gf)" opacity="0.18"/>
+  <path d="M8 27L14.5 9h1.2L22 27" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <line x1="10.8" y1="21" x2="19.2" y2="21" stroke="#00E5B0" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22 9v18h6" stroke="#F2F0EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="28" cy="27" r="1.6" fill="#00E5B0"/>
+  <defs><linearGradient id="al-gf" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+    <stop offset="0%" stop-color="#7B5EFF"/><stop offset="100%" stop-color="#00E5B0"/>
+  </linearGradient></defs>
+</svg>AltiLearn</a>
+        <p>Microlearning that actually sticks. Build skills in minutes a day.</p>
+      </div>
+      <div class="footer-col"><h5>Learn</h5><ul>
+        <li><a target="_self"href="./courses.html">Browse courses</a></li>
+        <li><a target="_self"href="./paths.html">Learning paths</a></li>
+        <li><a target="_self"href="./certificates.html">Certificates</a></li>
+        <li><a target="_self"href="./pricing.html">Pricing</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Teach</h5><ul>
+        <li><a target="_self"href="./teach.html">Start teaching</a></li>
+        <li><a target="_self"href="./instructor-guide.html">Instructor guide</a></li>
+        <li><a target="_self"href="./community.html">Community</a></li>
+        <li><a target="_self"href="./affiliate.html">Affiliate</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Company</h5><ul>
+        <li><a target="_self"href="./about.html">About</a></li>
+        <li><a target="_self"href="./blog.html">Blog</a></li>
+        <li><a target="_self"href="./careers.html">Careers</a></li>
+        <li><a target="_self"href="./contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AltiLearn. All rights reserved.</p>
+      <div class="footer-links">
+        <a target="_self"href="./privacy.html">Privacy</a>
+        <a target="_self"href="./terms.html">Terms</a>
+        <a target="_self"href="./cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
+const nt=document.getElementById('nt'),mn=document.getElementById('mn');
+nt.addEventListener('click',()=>{const o=mn.classList.toggle('open');nt.setAttribute('aria-expanded',o)});
+</script>
+</body>
+</html>
